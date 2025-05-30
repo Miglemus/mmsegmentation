@@ -110,6 +110,10 @@ def loveda_classes():
     ]
 
 
+def poquets_classes():
+    """ poquets class names for external use."""
+    return ["bg", "poquets"]
+
 def potsdam_classes():
     """Potsdam class names for external use."""
     return [
