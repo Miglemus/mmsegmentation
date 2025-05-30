@@ -10,3 +10,8 @@ Afterwards, you can run this command to launch the container:
 ```
 docker run --gpus all --shm-size=8g -it -v {DATA_DIR}:/mmsegmentation/data mmsegmentation
 ```
+
+in my case:
+```
+docker run --gpus all --shm-size=8g -it -v ./data:/mmsegmentation/data -v ./configs:/mmsegmentation/configs mmsegmentation
+```
