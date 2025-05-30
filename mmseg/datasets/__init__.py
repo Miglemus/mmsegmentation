@@ -46,7 +46,7 @@ from .voc import PascalVOCDataset
 __all__ = [
     'BaseSegDataset', 'BioMedical3DRandomCrop', 'BioMedical3DRandomFlip',
     'CityscapesDataset', 'PascalVOCDataset', 'ADE20KDataset',
-    'PascalContextDataset', 'PascalContextDataset59', 'ChaseDB1Dataset',
+    'PascalContextDataset', 'PascalContextDataset59', 'PoquetsDataset', 'ChaseDB1Dataset',
     'DRIVEDataset', 'HRFDataset', 'STAREDataset', 'DarkZurichDataset',
     'NightDrivingDataset', 'COCOStuffDataset', 'LoveDADataset',
     'MultiImageMixDataset', 'iSAIDDataset', 'ISPRSDataset', 'PotsdamDataset',

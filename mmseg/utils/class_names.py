@@ -396,6 +396,9 @@ def loveda_palette():
     return [[255, 255, 255], [255, 0, 0], [255, 255, 0], [0, 0, 255],
             [159, 129, 183], [0, 255, 0], [255, 195, 128]]
 
+def poquets_palette():
+    """ poquets palette for external use."""
+    return [[0, 0, 0], [255, 255, 255]]
 
 def potsdam_palette():
     """Potsdam palette for external use."""
@@ -498,6 +501,7 @@ dataset_aliases = {
     'voc': ['voc', 'pascal_voc', 'voc12', 'voc12aug'],
     'pcontext': ['pcontext', 'pascal_context', 'voc2010'],
     'loveda': ['loveda'],
+    'poquets': ['poquets'],
     'potsdam': ['potsdam'],
     'vaihingen': ['vaihingen'],
     'cocostuff': [

@@ -13,5 +13,5 @@ docker run --gpus all --shm-size=8g -it -v {DATA_DIR}:/mmsegmentation/data mmseg
 
 in my case:
 ```
-docker run --gpus all --shm-size=8g -it -v ./data:/mmsegmentation/data -v ./configs:/mmsegmentation/configs mmsegmentation
+docker run --rm --gpus all --shm-size=8g -it -v .:/mmsegmentation mmsegmentation
 ```
