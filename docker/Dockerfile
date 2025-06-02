@@ -26,6 +26,7 @@ ARG MMCV
 RUN ["/bin/bash", "-c", "pip install openmim"]
 RUN ["/bin/bash", "-c", "mim install mmengine"]
 RUN ["/bin/bash", "-c", "mim install mmcv==${MMCV}"]
+RUN pip install "mmdet>=3.0.0rc4"
 
 # Install MMSegmentation
 RUN git clone -b main https://github.com/open-mmlab/mmsegmentation.git /mmsegmentation
