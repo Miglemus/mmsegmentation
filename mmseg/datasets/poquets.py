@@ -5,7 +5,7 @@ from .basesegdataset import BaseSegDataset
 class PoquetsDataset(BaseSegDataset):
     METAINFO = dict(
         classes=("bg", "poquets"),
-        palette=[[0, 0, 0], [255, 255, 255]],
+        palette=[[0, 0, 0], [245, 66, 126]],
     )
 
     def __init__(
