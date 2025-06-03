@@ -1,5 +1,5 @@
 dataset_type = 'PoquetsDataset'
-data_root = 'data/poquets/'
+data_root = 'data/poquets_complet/'
 crop_size = (512, 512)
 train_pipeline = [
     dict(type='LoadImageFromFile'),

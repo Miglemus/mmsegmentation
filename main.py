@@ -1,9 +1,11 @@
 if __name__ == "__main__":
-    from mmseg.apis import MMSegInferencer, init_model, inference_model
+    import cv2
+    import numpy as np
+    from glob import glob
 
-    config_path = "configs/my_configs/mask2former_r50_8xb2-90k_cityscapes-512x1024.py"
-    checkpoint_path = "work_dirs/mask2former_r50_8xb2-90k_cityscapes-512x1024/best_mioU_iter_470"
+    mask_paths = glob('data/poquets_complet/annotations/train/*.png')
 
-    img_dir = "data/poquets/images/no_corresponding_annot"
-
+    for path in mask_paths[:5]:  # check 5 masks
+        mask = cv2.imread(path, cv2.IMREAD_UNCHANGED)
+        print(f'{path} - Unique labels:', np.unique(mask))
 

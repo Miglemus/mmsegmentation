@@ -398,7 +398,7 @@ def loveda_palette():
 
 def poquets_palette():
     """ poquets palette for external use."""
-    return [[0, 0, 0], [245, 66, 126]]
+    return [[52, 149, 235], [245, 66, 126]]
 
 def potsdam_palette():
     """Potsdam palette for external use."""

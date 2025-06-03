@@ -1,7 +1,7 @@
 import cv2
 import os
 import numpy as np
-import mmcv
+# import mmcv
 from pycocotools.coco import COCO
 from pycocotools import mask as maskUtils
 from PIL import Image
