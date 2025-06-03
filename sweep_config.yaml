@@ -1,0 +1,21 @@
+method: bayes
+metric:
+  name: mIoU
+  goal: maximize
+parameters:
+  lr:
+    min: 0.0001
+    max: 0.01
+  batch_size:
+    values: [1, 2, 4, 8]
+  depth:
+    values: [50, 101]
+  max_iters:
+    min: 400
+    max: 5000
+  bg_weight:
+    min: 0.5
+    max: 10.0
+  poquet_weight:
+    min: 0.5
+    max: 10.0
