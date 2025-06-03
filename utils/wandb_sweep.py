@@ -13,7 +13,7 @@ def train_sweep(cfg_path):
     cfg.optimizer.lr = wandb.config.lr
 
     # change the batchzise
-    cfg.data.train_dataloader.batch_size = wandb.config.batch_size
+    cfg.train_dataloader.batch_size = wandb.config.batch_size
 
     # change the backbone architecture
     cfg.model.backbone.depth = wandb.config.depth
@@ -42,18 +42,11 @@ def train_sweep(cfg_path):
     cfg.work_dir = f"work_dirs/sweep_{wandb.run.name}"
     os.makedirs(cfg.work_dir, exist_ok=True)
 
-    # Set logger hook to include wandb
-    cfg.default_hooks.logger.wandb = dict(
-        type='WandbLoggerHook',
-        init_kwargs=dict(
-            project='sweep-example',
-            name=wandb.run.name,
-        )
-    )
+
 
     runner = Runner.from_cfg(cfg)
     runner.train()
 
 if __name__ == "__main__":
     wandb.init(project="mmsegmentation")
-    train_sweep("../configs/my_configs/mask2former_r50_8xb2_poquets-complet-512x512.py")
+    train_sweep("/mmsegmentation/configs/my_configs/mask2former_r50_8xb2-3k_poquets-complet-512x512.py")
