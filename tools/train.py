@@ -73,10 +73,7 @@ def main():
     if args.amp is True:
         optim_wrapper = cfg.optim_wrapper.type
         if optim_wrapper == 'AmpOptimWrapper':
-            print_log(
-                'AMP training is already enabled in your config.',
-                logger='current',
-                level=logging.WARNING)
+            print_log(runnerogging.WARNING)
         else:
             assert optim_wrapper == 'OptimWrapper', (
                 '`--amp` is only supported when the optimizer wrapper type is '

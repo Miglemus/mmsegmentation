@@ -1,14 +1,24 @@
 _base_ = [
-    '../_base_/default_runtime.py'
+    '../_base_/default_runtime.py', '../_base_/datasets/poquets.py'
 ]
 
 pretrained = 'https://download.openmmlab.com/mmsegmentation/v0.5/pretrain/swin/swin_base_patch4_window12_384_20220317-55b0104a.pth'  # noqa
 
+crop_size = (640, 640)
+data_preprocessor = dict(
+    type='SegDataPreProcessor',
+    mean=[123.675, 116.28, 103.53],
+    std=[58.395, 57.12, 57.375],
+    bgr_to_rgb=True,
+    pad_val=0,
+    seg_pad_val=255,
+    size=crop_size)
 num_classes = 2
 
 depths = [2, 2, 18, 2]
 model = dict(
     type='EncoderDecoder',
+    data_preprocessor=data_preprocessor,
     backbone=dict(
         type='SwinTransformer',
         pretrain_img_size=384,
@@ -136,6 +146,22 @@ model = dict(
     train_cfg=dict(),
     test_cfg=dict(mode='whole'))
 
+# dataset config
+train_pipeline = [
+    dict(type='LoadImageFromFile'),
+    dict(type='LoadAnnotations', reduce_zero_label=True),
+    dict(
+        type='RandomChoiceResize',
+        scales=[int(x * 0.1 * 640) for x in range(5, 21)],
+        resize_type='ResizeShortestEdge',
+        max_size=2560),
+    dict(type='RandomCrop', crop_size=crop_size, cat_max_ratio=0.75),
+    dict(type='RandomFlip', prob=0.5),
+    dict(type='PhotoMetricDistortion'),
+    dict(type='PackSegInputs')
+]
+train_dataloader = dict(batch_size=1, dataset=dict(pipeline=train_pipeline))
+
 # set all layers in backbone to lr_mult=0.1
 # set all norm layers, position_embeding,
 # query_embeding, level_embeding to decay_multi=0.0
@@ -183,7 +209,7 @@ param_scheduler = [
 
 # training schedule for 160k
 train_cfg = dict(
-    type='IterBasedTrainLoop', max_iters=160000, val_interval=5000)
+    type='IterBasedTrainLoop', max_iters=3000, val_interval=50)
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 default_hooks = dict(
@@ -191,7 +217,7 @@ default_hooks = dict(
     logger=dict(type='LoggerHook', interval=50, log_metric_by_epoch=False),
     param_scheduler=dict(type='ParamSchedulerHook'),
     checkpoint=dict(
-        type='CheckpointHook', by_epoch=False, interval=5000,
+        type='CheckpointHook', by_epoch=False, interval=400,
         save_best='mIoU'),
     sampler_seed=dict(type='DistSamplerSeedHook'),
     visualization=dict(type='SegVisualizationHook'))

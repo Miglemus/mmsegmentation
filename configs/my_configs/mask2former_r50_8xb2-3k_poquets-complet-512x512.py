@@ -140,7 +140,7 @@ train_pipeline = [
     dict(type='LoadAnnotations'),
     dict(
         type='RandomChoiceResize',
-        scales=[int(1024 * x * 0.1) for x in range(5, 21)],
+        scales=[int(1024 * x * 0.01) for x in range(5, 21)], # range(28, 201)
         resize_type='ResizeShortestEdge',
         max_size=4096),
     dict(type='RandomCrop', crop_size=crop_size, cat_max_ratio=0.75),
