@@ -149,11 +149,11 @@ model = dict(
 # dataset config
 train_pipeline = [
     dict(type='LoadImageFromFile'),
-    dict(type='LoadAnnotations', with_bbox=True, with_mask=True),
+    dict(type='LoadAnnotations'),
     dict(crop_size=(906, 906), type='RandomCrop'),
     dict(prob=0.5, direction='vertical', type='RandomFlip'),
     dict(prob=0.5, direction='horizontal', type='RandomFlip'),
-    dict(max_angle=90, rotate_prob=0.25, type='RandomRotate'),
+    dict(degree=(0, 360), prob=1.0, type='RandomRotate'),
     dict(crop_size=(640, 640,), type='RandomCrop'),
     dict(
         brightness_delta=16,
@@ -167,7 +167,7 @@ train_pipeline = [
             1.5,
         ),
         type='PhotoMetricDistortion'),
-    dict(type='PackDetInputs'),
+    dict(type='PackSegInputs'),
 ]
 train_dataloader = dict(batch_size=1, dataset=dict(pipeline=train_pipeline))
 
@@ -229,7 +229,13 @@ default_hooks = dict(
         type='CheckpointHook', by_epoch=False, interval=400,
         save_best='mIoU'),
     sampler_seed=dict(type='DistSamplerSeedHook'),
-    visualization=dict(type='SegVisualizationHook'))
+    visualization=dict(type='SegVisualizationHook'),
+    early_stopping=dict(
+        type='EarlyStoppingHook',
+        patience=10,
+        min_delta=0.001,
+        monitor='mIoU',
+    ))
 
 # Default setting for scaling LR automatically
 #   - `enable` means enable scaling LR automatically
