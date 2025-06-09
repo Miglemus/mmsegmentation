@@ -9,11 +9,33 @@ if __name__ == "__main__":
 
     import os
     from utils.visualization import show_image
+    from mmseg.datasets.transforms import transforms
+    from PIL import Image
+    import numpy as np
 
-    image_dir = "./data/poquets_complet/images/train"
-    mask_dir = "./data/poquets_complet/annotations/train"
+    pipeline = [
+        transforms.RandomCrop(crop_size=(906, 906)),
+        transforms.RandomRotate(degree=(0, 360), prob=1.0,),
+        transforms.RandomCrop(crop_size=(640, 640)),
+    ]
 
-    images = [os.path.join(image_dir, image) for image in sorted(os.listdir(image_dir))]
-    masks = [os.path.join(mask_dir, mask) for mask in sorted(os.listdir(mask_dir))]
+    image_path = "./data/poquets/images/test/DJI_20240529102221_0010_V.jpg"
 
-    show_image(images, masks)
+    image = Image.open(image_path).convert("RGB")
+
+    # Convert to numpy array
+    image_np = np.array(image)
+
+    # Show the image using the utility function
+    for i in range(10):
+        iamge_dict = {"img": image_np}
+        for transform in pipeline:
+            # Apply each transformation
+            iamge_dict = transform(iamge_dict)
+            
+        # transformed_image = pipeline[1]({"img": image_np})
+        # save transformed image
+        transformed_image_pil = Image.fromarray(iamge_dict["img"])
+        transformed_image_pil.save(f"./temp/test/transformed_{i}.jpg")
+
+    

@@ -149,16 +149,25 @@ model = dict(
 # dataset config
 train_pipeline = [
     dict(type='LoadImageFromFile'),
-    dict(type='LoadAnnotations', reduce_zero_label=True),
+    dict(type='LoadAnnotations', with_bbox=True, with_mask=True),
+    dict(crop_size=(906, 906), type='RandomCrop'),
+    dict(prob=0.5, direction='vertical', type='RandomFlip'),
+    dict(prob=0.5, direction='horizontal', type='RandomFlip'),
+    dict(max_angle=90, rotate_prob=0.25, type='RandomRotate'),
+    dict(crop_size=(640, 640,), type='RandomCrop'),
     dict(
-        type='RandomChoiceResize',
-        scales=[int(x * 0.1 * 640) for x in range(5, 21)],
-        resize_type='ResizeShortestEdge',
-        max_size=2560),
-    dict(type='RandomCrop', crop_size=crop_size, cat_max_ratio=0.75),
-    dict(type='RandomFlip', prob=0.5),
-    dict(type='PhotoMetricDistortion'),
-    dict(type='PackSegInputs')
+        brightness_delta=16,
+        contrast_range=(
+            0.75,
+            1.3,
+        ),
+        hue_delta=9,
+        saturation_range=(
+            0.5,
+            1.5,
+        ),
+        type='PhotoMetricDistortion'),
+    dict(type='PackDetInputs'),
 ]
 train_dataloader = dict(batch_size=1, dataset=dict(pipeline=train_pipeline))
 
