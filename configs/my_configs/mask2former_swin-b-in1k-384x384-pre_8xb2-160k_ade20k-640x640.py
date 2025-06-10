@@ -218,7 +218,7 @@ param_scheduler = [
 
 # training schedule for 160k
 train_cfg = dict(
-    type='IterBasedTrainLoop', max_iters=3000, val_interval=50)
+    type='IterBasedTrainLoop', max_iters=10000, val_interval=50)
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 default_hooks = dict(
@@ -232,8 +232,8 @@ default_hooks = dict(
     visualization=dict(type='SegVisualizationHook'),
     early_stopping=dict(
         type='EarlyStoppingHook',
-        patience=10,
-        min_delta=0.001,
+        patience=20,
+        min_delta=0.0001,
         monitor='mIoU',
     ))
 

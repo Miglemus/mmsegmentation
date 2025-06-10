@@ -205,6 +205,40 @@ class CLAHE(BaseTransform):
 
 
 @TRANSFORMS.register_module()
+class RandomChoiceCrop(BaseTransform):
+
+    def __init__(
+            self,
+            crop_size: Union[List[int], List[Tuple[int, int]]],
+            cat_max_ratio: float = 1.,
+            ignore_index: int = 255):
+
+        self.crop_size = crop_size
+        self.cat_max_ratio = cat_max_ratio
+        self.ignore_index = ignore_index
+    
+    def transform(self, result: dict) -> dict:
+        if not isinstance(self.crop_size, (list)):
+            raise TypeError(
+                f'crop_size must be a list but got {type(self.crop_size)}')
+        if not isinstance(self.crop_size[0], (int, tuple)):
+            raise TypeError(
+                f'crop_size must be a list of int or tuple, but got {type(self.crop_size[0])}')
+
+        if len(self.crop_size) <= 1:
+            raise ValueError("crop_size must contain more than one size, ")
+        
+
+        rnd_index = random.randint(0, len(self.crop_size)-1)
+        rnd_crop_size = self.crop_size[rnd_index]
+        resizer = RandomCrop(rnd_crop_size, self.cat_max_ratio, self.ignore_index)
+
+        result = resizer.transform(result)
+
+        return result
+
+
+@TRANSFORMS.register_module()
 class RandomCrop(BaseTransform):
     """Random crop the image & seg.
 
