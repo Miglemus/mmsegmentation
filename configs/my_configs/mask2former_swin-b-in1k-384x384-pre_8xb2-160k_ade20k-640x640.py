@@ -150,23 +150,38 @@ model = dict(
 train_pipeline = [
     dict(type='LoadImageFromFile'),
     dict(type='LoadAnnotations'),
-    dict(crop_size=(906, 906), type='RandomCrop'),
-    dict(prob=0.5, direction='vertical', type='RandomFlip'),
-    dict(prob=0.5, direction='horizontal', type='RandomFlip'),
-    dict(degree=(0, 360), prob=1.0, type='RandomRotate'),
-    dict(crop_size=(640, 640,), type='RandomCrop'),
-    dict(
-        brightness_delta=16,
-        contrast_range=(
-            0.75,
-            1.3,
-        ),
-        hue_delta=9,
-        saturation_range=(
-            0.5,
-            1.5,
-        ),
-        type='PhotoMetricDistortion'),
+    dict(crop_size=[
+        (3956, 3956),
+        (3800, 3800),
+        (3700, 3700),
+        (3600, 3600),
+        (3500, 3500),
+        (3400, 3400),
+        (3300, 3300),
+        (3200, 3200),
+        (3100, 3100),
+        (3000, 3000),
+        (2900, 2900),
+        (2800, 2800),
+        (2700, 2700),
+        (2600, 2600),
+        (2500, 2500),
+        (2400, 2400),
+        (2300, 2300),
+        (2200, 2200),
+        (2100, 2100),
+        (2000, 2000),
+        (1900, 1900),
+        (1800, 1800),
+        (1700, 1700),
+        (1600, 1600),
+    ], type="RandomChoiceCrop",),
+    dict(type='Resize', scale=(906, 906), keep_ratio=True),
+    dict(type='RandomFlip', prob=0.5, direction='vertical'),
+    dict(type='RandomFlip', prob=0.5, direction='horizontal'),
+    dict(type='RandomRotate', degree=(0, 360), prob=1.0),
+    dict(type='CenterCrop', crop_size=(640, 640)),
+    dict(type='PhotoMetricDistortion',),
     dict(type='PackSegInputs'),
 ]
 train_dataloader = dict(batch_size=1, dataset=dict(pipeline=train_pipeline))
@@ -216,9 +231,6 @@ param_scheduler = [
         by_epoch=False)
 ]
 
-# training schedule for 160k
-train_cfg = dict(
-    type='IterBasedTrainLoop', max_iters=10000, val_interval=50)
 val_cfg = dict(type='ValLoop')
 test_cfg = dict(type='TestLoop')
 default_hooks = dict(

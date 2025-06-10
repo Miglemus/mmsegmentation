@@ -7,3 +7,5 @@ model = dict(
         num_heads=[6, 12, 24, 48],
         init_cfg=dict(type='Pretrained', checkpoint=pretrained)),
     decode_head=dict(num_queries=100, in_channels=[192, 384, 768, 1536]))
+train_cfg = dict(
+    type='IterBasedTrainLoop', max_iters=10000, val_interval=50)
