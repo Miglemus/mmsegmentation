@@ -203,6 +203,43 @@ class CLAHE(BaseTransform):
                     f'tile_grid_size={self.tile_grid_size})'
         return repr_str
 
+@TRANSFORMS.register_module()
+class RandomUniformDownScale(BaseTransform):
+
+    def __init__(
+            self,
+            min_down_scale: float,
+            max_down_scale: float,
+            cat_max_ratio: float = 1.,
+            ignore_index: int = 255):
+        
+        assert 1 <= min_down_scale < max_down_scale, \
+            f'min_down_scale {min_down_scale} should be less than ' \
+            f'max_down_scale {max_down_scale} and greater than or equal to 1.'
+        
+        self.min_down_scale = min_down_scale
+        self.max_down_scale = max_down_scale
+        self.cat_max_ratio = cat_max_ratio
+        self.ignore_index = ignore_index
+
+    def transform(self, result: dict) -> dict:
+        down_scale_factor = random.uniform(self.min_down_scale, self.max_down_scale)
+        down_scaler = Resize(scale_factor=1/down_scale_factor, keep_ratio=True)
+        result = down_scaler.transform(result)
+        return result
+
+@TRANSFORMS.register_module()
+class RandomChoiceRotate(BaseTransform):
+
+    def __init__(self,
+                 angles: List[float],
+                 probs: Optional[List[float]] = None):
+        
+        self.angles = angles
+        self.probs = probs
+    
+    def transform(self, results):
+        raise NotImplementedError("RandomChoiceRotate is not implemented yet. ")
 
 @TRANSFORMS.register_module()
 class RandomChoiceCrop(BaseTransform):

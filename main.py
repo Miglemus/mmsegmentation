@@ -13,41 +13,14 @@ if __name__ == "__main__":
     from mmcv.transforms import RandomChoiceResize, CenterCrop
     from PIL import Image
     import numpy as np
+    import time
 
     pipeline_new = [ # downscale 3-5 times, randomcrop 640x640, randomflip horizontal and vertical, RandomOrthogonalRotate, photometric distortion
-        transforms.RandomChoiceCrop( # use min-max crop size
-            crop_size=[
-                (3956, 3956),
-                (3800, 3800),
-                (3700, 3700),
-                (3600, 3600),
-                (3500, 3500),
-                (3400, 3400),
-                (3300, 3300),
-                (3200, 3200),
-                (3100, 3100),
-                (3000, 3000),
-                (2900, 2900),
-                (2800, 2800),
-                (2700, 2700),
-                (2600, 2600),
-                (2500, 2500),
-                (2400, 2400),
-                (2300, 2300),
-                (2200, 2200),
-                (2100, 2100),
-                (2000, 2000),
-                (1900, 1900),
-                (1800, 1800),
-                (1700, 1700),
-                (1600, 1600),
-            ]
-        ),
-        transforms.Resize(scale=(906, 906), keep_ratio=True),
+        transforms.RandomUniformDownScale(min_down_scale=3.0, max_down_scale=5.0),
+        transforms.RandomCrop(crop_size=(640, 640)),
         transforms.RandomFlip(prob=0.5, direction="vertical"),
         transforms.RandomFlip(prob=0.5, direction="horizontal"),
         transforms.RandomRotate(degree=(0, 360), prob=1.0,),
-        CenterCrop(crop_size=(640, 640)),
         transforms.PhotoMetricDistortion(),
     ]
 
@@ -101,15 +74,18 @@ if __name__ == "__main__":
     image_np = np.array(image)
 
     # Show the image using the utility function
+    start = time.time()
     for i in range(25):
         image_dict = {"img": image_np}
-        for transform in pipeline_swin:
+        for transform in pipeline_new:
             # Apply each transformation
             image_dict = transform(image_dict)
             
         # transformed_image = pipeline[1]({"img": image_np})
         # save transformed image
         transformed_image_pil = Image.fromarray(image_dict["img"])
-        transformed_image_pil.save(f"./temp/swin old/transformed_{i}.jpg")
+        transformed_image_pil.save(f"./temp/swin_old/transformed_{i}.jpg")
 
+    end = time.time()
+    print(f"Time taken for 25 transformations: {end - start} seconds")
     
