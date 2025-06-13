@@ -1,9 +1,9 @@
 import os
 from mmseg.apis import MMSegInferencer
 
-inferencer = MMSegInferencer(model="work_dirs/mask2former_r50_8xb2-4k_poquets-complet-512x512/best_mioU_iter_1650.pth")
+inferencer = MMSegInferencer(model="work_dirs/mask2former-pipeline1/mask2former_swin-l-in22k-384x384-pre_8xb2-10k_poquets-complets-640x640.py")
 
-image_dir = "./data/poquets_complet/images"
+image_dir = "./data/poquets_complet/images/test"
 
 images = [os.path.join(image_dir, image_name) for image_name in os.listdir(image_dir)[:5]]
 

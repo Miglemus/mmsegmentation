@@ -230,16 +230,68 @@ class RandomUniformDownScale(BaseTransform):
 
 @TRANSFORMS.register_module()
 class RandomChoiceRotate(BaseTransform):
+    """Randomly rotate image & seg map by a fixed angle from a list.
+
+    Args:
+        angles (List[float]): List of rotation angles to choose from.
+        probs (List[float], optional): List of probabilities for each angle.
+            If None, all angles are equally likely.
+        pad_val (float): Padding value for image. Default: 0.
+        seg_pad_val (float): Padding value for segmentation map. Default: 255.
+        center (tuple[float], optional): Center of rotation (w, h).
+            Default: image center.
+        auto_bound (bool): Whether to expand image to fit rotated result.
+            Default: False.
+    """
 
     def __init__(self,
                  angles: List[float],
-                 probs: Optional[List[float]] = None):
-        
+                 probs: Optional[List[float]] = None,
+                 pad_val: float = 0,
+                 seg_pad_val: float = 255,
+                 center: Optional[tuple] = None,
+                 auto_bound: bool = False):
+        assert isinstance(angles, list) and len(angles) > 0, \
+            "angles must be a non-empty list."
         self.angles = angles
+        if probs is not None:
+            assert len(probs) == len(angles), \
+                "Length of probs must match angles."
+            assert abs(sum(probs) - 1.0) < 1e-6, "probs must sum to 1."
         self.probs = probs
-    
-    def transform(self, results):
-        raise NotImplementedError("RandomChoiceRotate is not implemented yet. ")
+        self.pad_val = pad_val
+        self.seg_pad_val = seg_pad_val
+        self.center = center
+        self.auto_bound = auto_bound
+
+    def transform(self, results: dict) -> dict:
+        angle = np.random.choice(self.angles, p=self.probs)
+
+        results['img'] = mmcv.imrotate(
+            results['img'],
+            angle=angle,
+            border_value=self.pad_val,
+            center=self.center,
+            auto_bound=self.auto_bound
+        )
+
+        for key in results.get('seg_fields', []):
+            results[key] = mmcv.imrotate(
+                results[key],
+                angle=angle,
+                border_value=self.seg_pad_val,
+                center=self.center,
+                auto_bound=self.auto_bound,
+                interpolation='nearest'
+            )
+
+        return results
+
+    def __repr__(self):
+        return (f'{self.__class__.__name__}(angles={self.angles}, '
+                f'probs={self.probs}, pad_val={self.pad_val}, '
+                f'seg_pad_val={self.seg_pad_val}, center={self.center}, '
+                f'auto_bound={self.auto_bound})')
 
 @TRANSFORMS.register_module()
 class RandomChoiceCrop(BaseTransform):
