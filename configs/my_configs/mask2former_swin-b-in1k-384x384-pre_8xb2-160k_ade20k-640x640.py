@@ -148,17 +148,31 @@ model = dict(
 
 # dataset config
 train_pipeline = [
-    dict(type='LoadImageFromFile'),
+    dict(type='LoadMosaicImageFromFile'),
     dict(type='LoadAnnotations'),
-    dict(type='RandomUniformDownScale', min_down_scale=3.0, max_down_scale=5.0),
+    dict(
+        type='RandomMosaic',
+        prob=1.0,
+        img_scale=(1978, 2640)
+    ),
+    dict(
+        type='RandomUniformDownScale',
+        min_down_scale=3.0,
+        max_down_scale=5.0
+    ),
     dict(type='RandomCrop', crop_size=(640, 640)),
     dict(type='RandomFlip', prob=0.5, direction='vertical'),
     dict(type='RandomFlip', prob=0.5, direction='horizontal'),
-    dict(type='RandomRotate', degree=(0, 360), prob=1.0),
-    dict(type='PhotoMetricDistortion',),
+    dict(type='PhotoMetricDistortion'),
     dict(type='PackSegInputs'),
 ]
-train_dataloader = dict(batch_size=1, dataset=dict(pipeline=train_pipeline))
+
+train_dataloader = dict(
+    batch_size=1,
+    dataset=dict(
+        pipeline=train_pipeline
+    )
+)
 
 # set all layers in backbone to lr_mult=0.1
 # set all norm layers, position_embeding,
